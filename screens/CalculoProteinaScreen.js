@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+// CalculoProteinaScreen.js
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CalculoProteinaScreen({ navigation }) {
   const [frangoGramas, setFrangoGramas] = useState('');
   const [contrafileGramas, setContrafileGramas] = useState('');
   const [ovoQuantidade, setOvoQuantidade] = useState('');
+  const [ovoComGema, setOvoComGema] = useState(true);
   const [shakeQuantidade, setShakeQuantidade] = useState('');
   const [metaDiaria, setMetaDiaria] = useState('');
   const [dia, setDia] = useState('');
@@ -31,18 +34,20 @@ export default function CalculoProteinaScreen({ navigation }) {
     const contrafile = parseFloat(contrafileGramas) || 0;
     const ovo = parseInt(ovoQuantidade) || 0;
     const shake = parseInt(shakeQuantidade) || 0;
-    const total = frango * 0.23 + contrafile * 0.2191 + ovo * 6 + shake * 30;
+    const ovoProteina = ovoComGema ? 6 : 3;
+    const total = frango * 0.23 + contrafile * 0.2191 + ovo * ovoProteina + shake * 30;
     return Math.floor(total);
   };
-  
 
   const salvarRegistro = async () => {
     try {
       const totalProteinas = calcularTotalProteinas();
       const registro = {
+        id: Date.now(),
         frangoGramas,
         contrafileGramas,
         ovoQuantidade,
+        ovoComGema,
         shakeQuantidade,
         dia,
         mes,
@@ -54,7 +59,7 @@ export default function CalculoProteinaScreen({ navigation }) {
       registrosAnteriores.push(registro);
       await AsyncStorage.setItem('registros', JSON.stringify(registrosAnteriores));
       Alert.alert('Sucesso', 'Registro salvo com sucesso!');
-      navigation.navigate('Meta', { registro });
+      navigation.navigate('Meta');
     } catch (error) {
       console.error('Erro ao salvar o registro:', error);
       Alert.alert('Erro', 'Houve um erro ao salvar o registro. Por favor, tente novamente.');
@@ -81,7 +86,18 @@ export default function CalculoProteinaScreen({ navigation }) {
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Ovo (quantidade)</Text>
+        <Text style={styles.label}>Ovo</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={ovoComGema}
+            style={styles.picker}
+            onValueChange={(itemValue, itemIndex) => setOvoComGema(itemValue)}
+          >
+            <Picker.Item label="Com Gema" value={true} />
+            <Picker.Item label="Sem Gema" value={false} />
+          </Picker>
+        </View>
+        <Text style={styles.label}>Quantidade de Ovos</Text>
         <TextInput
           style={styles.input}
           value={ovoQuantidade}
@@ -150,6 +166,14 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 5,
     marginBottom: 20,
+  },
+  pickerContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  picker: {
+    color: '#000',
   },
   saveButton: {
     backgroundColor: '#007bff',

@@ -1,99 +1,118 @@
 import React from 'react';
 import { StatusBar, View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Linking } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CalculoProteinaScreen from './screens/CalculoProteinaScreen';
 import MetaScreen from './screens/MetaScreen';
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-function HomeScreen({ navigation }) {
+const CustomDrawerContent = (props) => (
+  <DrawerContentScrollView {...props} style={{ backgroundColor: '#007bff' }}>
+    <DrawerItemList {...props} labelStyle={{ fontWeight: 'bold', color: 'white' }} />
+    <DrawerItem
+      label="Meu Perfil"
+      onPress={() => Linking.openURL('https://www.linkedin.com/in/oliveiraenzobackend/')}
+      icon={() => <Icon name="linkedin" size={30} color="white" />}
+    />
+  </DrawerContentScrollView>
+);
+
+const App = () => {
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'white',
+      background: 'white',
+      card: '#007bff',
+      text: 'white',
+      border: 'white',
+    },
+  };
+
+  return (
+    <NavigationContainer theme={MyTheme}>
+      <StatusBar barStyle="light-content" backgroundColor="black" />
+      <Drawer.Navigator initialRouteName="Home" drawerContent={props => <CustomDrawerContent {...props} />}>
+        <Drawer.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            drawerLabel: 'Home',
+            drawerIcon: ({ color }) => <Icon name="home" size={24} color={color} />,
+          }}
+        />
+        <Drawer.Screen
+          name="CalculoProteina"
+          component={CalculoProteinaScreen}
+          options={{
+            drawerLabel: 'Cálculo de Proteína',
+            drawerIcon: ({ color }) => <Icon name="cutlery" size={24} color={color} />,
+          }}
+        />
+        <Drawer.Screen
+          name="Meta"
+          component={MetaScreen}
+          options={{
+            drawerLabel: 'Meta Diária',
+            drawerIcon: ({ color }) => <Icon name="calendar" size={24} color={color} />,
+          }}
+        />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const HomeScreen = () => {
+  const date = new Date();
+  const currentDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <TouchableOpacity style={styles.iconContainer} onPress={() => Linking.openURL('https://www.linkedin.com/in/oliveiraenzobackend/')}>
-          <Icon name="linkedin" size={30} color="#007bff" />
+          <Icon name="linkedin" size={30} color="white" />
         </TouchableOpacity>
         <Text style={styles.welcomeText}>Seja bem-vindo, senhor!</Text>
-        <TouchableOpacity style={[styles.button, styles.firstButton]} onPress={() => navigation.navigate('CalculoProteina')}>
-          <Text style={styles.buttonText}>Calcular Proteína</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.secondButton]} onPress={() => navigation.navigate('Meta')}>
-          <Text style={styles.buttonText}>Meta Diária</Text>
-        </TouchableOpacity>
+        <Text style={styles.dateText}>{currentDate}</Text>
       </View>
     </SafeAreaView>
-  );
-}
-
-export default function App() {
-  return (
-    <NavigationContainer>
-      <StatusBar barStyle="light-content" />
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            title: 'Proteine',
-            headerStyle: { backgroundColor: 'blue' },
-            headerTintColor: '#fff',
-            headerTitleStyle: { fontWeight: 'bold' },
-            headerTitleAlign: 'center',
-          }}
-        />
-        <Stack.Screen
-          name="CalculoProteina"
-          component={CalculoProteinaScreen}
-          options={{ title: 'Cálculo de Proteína', headerStyle: { backgroundColor: 'blue' },headerTintColor: '#fff' }}
-        />
-        <Stack.Screen
-          name="Meta"
-          component={MetaScreen}
-          options={{ title: 'Meta Diária de Proteína', headerStyle: { backgroundColor: 'blue' },headerTintColor: '#fff' }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', 
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 60,
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: 'white',
     textAlign: 'center',
     paddingHorizontal: 20,
-    marginBottom: 20, // Espaçamento ajustado
+    marginBottom: 40, // Ajustado para distribuir uniformemente
   },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-  },
-  buttonText: {
+  dateText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
+    color: 'white',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
   iconContainer: {
-    marginBottom: 20, // Espaçamento ajustado
-  },
-  firstButton: {
-    marginBottom: 20, // Espaçamento específico para o primeiro botão
-  },
-  secondButton: {
-    marginBottom: 40, // Espaçamento específico para o segundo botão
+    marginBottom: 20, // Ajustado para centralizar verticalmente
   },
 });
+
+export default App;

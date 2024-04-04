@@ -1,27 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native'; // Importe o useFocusEffect
 
 export default function MetaScreen({ navigation }) {
   const [registros, setRegistros] = useState([]);
 
-  useEffect(() => {
-    const carregarRegistros = async () => {
-      try {
-        const registrosSalvos = await AsyncStorage.getItem('registros');
-        if (registrosSalvos !== null) {
-          setRegistros(JSON.parse(registrosSalvos));
-        }
-      } catch (error) {
-        console.error('Erro ao carregar registros:', error);
-      }
-    };
-    carregarRegistros();
-  }, []);
-
-  const excluirRegistro = async (registro) => {
+  const loadRegistros = async () => {
     try {
-      let novosRegistros = registros.filter(item => item.dia !== registro.dia || item.mes !== registro.mes);
+      const registrosSalvos = await AsyncStorage.getItem('registros');
+      if (registrosSalvos !== null) {
+        setRegistros(JSON.parse(registrosSalvos));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar registros:', error);
+    }
+  };
+
+  const excluirRegistro = async (id) => {
+    try {
+      const novosRegistros = registros.filter(item => item.id !== id);
       await AsyncStorage.setItem('registros', JSON.stringify(novosRegistros));
       setRegistros(novosRegistros);
     } catch (error) {
@@ -29,30 +27,37 @@ export default function MetaScreen({ navigation }) {
     }
   };
 
+  // Use o useFocusEffect para carregar os registros sempre que a tela for focada
+  useFocusEffect(
+    React.useCallback(() => {
+      loadRegistros();
+    }, [])
+  );
+
   return (
-    <View style={styles.container}>
-      {[...registros].reverse().map((registro, index) => (
+    <ScrollView contentContainerStyle={styles.container}>
+      {registros.map((registro, index) => (
         <View key={index} style={styles.registroContainer}>
           <Text style={styles.label}>Dia: {registro.dia}</Text>
           <Text style={styles.label}>Mês: {registro.mes}</Text>
           <Text style={styles.label}>Filé de Frango (g): {registro.frangoGramas}</Text>
           <Text style={styles.label}>Contrafilé (g): {registro.contrafileGramas}</Text>
-          <Text style={styles.label}>Ovo (quantidade): {registro.ovoQuantidade}</Text>
+          <Text style={styles.label}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
           <Text style={styles.label}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
           <Text style={styles.label}>Meta Diária de Proteína (g): {registro.metaDiaria}</Text>
           <Text style={styles.label}>Proteínas Ingeridas (g): {registro.totalProteinas}</Text>
-          <TouchableOpacity style={styles.excluirButton} onPress={() => excluirRegistro(registro)}>
+          <TouchableOpacity style={styles.excluirButton} onPress={() => excluirRegistro(registro.id)}>
             <Text style={styles.excluirButtonText}>Excluir</Text>
           </TouchableOpacity>
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
     backgroundColor: '#000',
