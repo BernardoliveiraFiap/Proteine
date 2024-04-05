@@ -1,14 +1,13 @@
 // CalculoProteinaScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, SafeAreaView, StatusBar } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CalculoProteinaScreen({ navigation }) {
   const [frangoGramas, setFrangoGramas] = useState('');
   const [contrafileGramas, setContrafileGramas] = useState('');
-  const [ovoQuantidade, setOvoQuantidade] = useState('');
-  const [ovoComGema, setOvoComGema] = useState(true);
+  const [ovoComGema, setOvoComGema] = useState('');
+  const [ovoSemGema, setOvoSemGema] = useState('');
   const [shakeQuantidade, setShakeQuantidade] = useState('');
   const [metaDiaria, setMetaDiaria] = useState('');
   const [dia, setDia] = useState('');
@@ -32,10 +31,11 @@ export default function CalculoProteinaScreen({ navigation }) {
   const calcularTotalProteinas = () => {
     const frango = parseFloat(frangoGramas) || 0;
     const contrafile = parseFloat(contrafileGramas) || 0;
-    const ovo = parseInt(ovoQuantidade) || 0;
+    const ovoComGemaQty = parseInt(ovoComGema) || 0;
+    const ovoSemGemaQty = parseInt(ovoSemGema) || 0;
     const shake = parseInt(shakeQuantidade) || 0;
-    const ovoProteina = ovoComGema ? 6 : 3;
-    const total = frango * 0.23 + contrafile * 0.2191 + ovo * ovoProteina + shake * 30;
+    const totalOvos = ovoComGemaQty * 6 + ovoSemGemaQty * 3;
+    const total = frango * 0.23 + contrafile * 0.2191 + totalOvos + shake * 30;
     return Math.floor(total);
   };
 
@@ -46,8 +46,8 @@ export default function CalculoProteinaScreen({ navigation }) {
         id: Date.now(),
         frangoGramas,
         contrafileGramas,
-        ovoQuantidade,
         ovoComGema,
+        ovoSemGema,
         shakeQuantidade,
         dia,
         mes,
@@ -86,22 +86,19 @@ export default function CalculoProteinaScreen({ navigation }) {
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Ovo</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={ovoComGema}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) => setOvoComGema(itemValue)}
-          >
-            <Picker.Item label="Com Gema" value={true} />
-            <Picker.Item label="Sem Gema" value={false} />
-          </Picker>
-        </View>
-        <Text style={styles.label}>Quantidade de Ovos</Text>
+        <Text style={styles.label}>Ovos com Gema</Text>
         <TextInput
           style={styles.input}
-          value={ovoQuantidade}
-          onChangeText={text => setOvoQuantidade(text)}
+          value={ovoComGema}
+          onChangeText={text => setOvoComGema(text)}
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.label}>Ovos sem Gema</Text>
+        <TextInput
+          style={styles.input}
+          value={ovoSemGema}
+          onChangeText={text => setOvoSemGema(text)}
           keyboardType="numeric"
         />
 

@@ -5,6 +5,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CalculoProteinaScreen from './screens/CalculoProteinaScreen';
 import MetaScreen from './screens/MetaScreen';
+import Consulta from './screens/Consulta';
 
 const Drawer = createDrawerNavigator();
 
@@ -56,10 +57,22 @@ const App = () => {
           name="Meta"
           component={MetaScreen}
           options={{
-            drawerLabel: 'Meta Diária',
+            drawerLabel: 'Meta',
             drawerIcon: ({ color }) => <Icon name="calendar" size={24} color={color} />,
           }}
         />
+
+        <Drawer.Screen
+          name="Consulta"
+          component={Consulta}
+          options={{
+            drawerLabel:'Consultar Info',
+            drawerIcon: ({ color }) => <Icon name="info" size={25} color={color} />,
+          }}
+        />
+
+
+        
       </Drawer.Navigator>
     </NavigationContainer>
   );

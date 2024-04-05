@@ -1,7 +1,8 @@
+// MetaScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native'; // Importe o useFocusEffect
+import { useFocusEffect } from '@react-navigation/native'; 
 
 export default function MetaScreen({ navigation }) {
   const [registros, setRegistros] = useState([]);
@@ -27,7 +28,6 @@ export default function MetaScreen({ navigation }) {
     }
   };
 
-  // Use o useFocusEffect para carregar os registros sempre que a tela for focada
   useFocusEffect(
     React.useCallback(() => {
       loadRegistros();
@@ -36,13 +36,14 @@ export default function MetaScreen({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {registros.map((registro, index) => (
+      {registros.slice().reverse().map((registro, index) => (
         <View key={index} style={styles.registroContainer}>
           <Text style={styles.label}>Dia: {registro.dia}</Text>
           <Text style={styles.label}>Mês: {registro.mes}</Text>
           <Text style={styles.label}>Filé de Frango (g): {registro.frangoGramas}</Text>
           <Text style={styles.label}>Contrafilé (g): {registro.contrafileGramas}</Text>
           <Text style={styles.label}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
+          <Text style={styles.label}>Ovo Sem Gema (quantidade): {registro.ovoSemGema}</Text>
           <Text style={styles.label}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
           <Text style={styles.label}>Meta Diária de Proteína (g): {registro.metaDiaria}</Text>
           <Text style={styles.label}>Proteínas Ingeridas (g): {registro.totalProteinas}</Text>
