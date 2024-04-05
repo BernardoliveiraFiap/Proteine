@@ -46,10 +46,10 @@ const App = () => {
           }}
         />
         <Drawer.Screen
-          name="CalculoProteina"
+          name="Calcular Proteína"
           component={CalculoProteinaScreen}
           options={{
-            drawerLabel: 'Cálculo de Proteína',
+            drawerLabel: 'Calcular Proteína',
             drawerIcon: ({ color }) => <Icon name="cutlery" size={24} color={color} />,
           }}
         />

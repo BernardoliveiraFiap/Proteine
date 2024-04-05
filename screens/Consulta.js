@@ -31,10 +31,10 @@ const ConsultaScreen = () => {
   };
 
   const foodItems = [
-    { name: 'Filé de Frango', proteinPer100g: 31 },
+    { name: 'Filé de Frango', proteinPer100g: 23 },
     { name: 'Ovo (com gema)', proteinPerUnit: 6 },
     { name: 'Ovo (sem gema)', proteinPerUnit: 3 },
-    { name: 'Contrafilé', proteinPer100g: 20 },
+    { name: 'Contrafilé', proteinPer100g: 21 },
     { name: 'Shake de Whey', proteinPerUnit: 30 },
   ];
 
@@ -64,6 +64,18 @@ const ConsultaScreen = () => {
     } catch (error) {
       console.error('Erro ao salvar o registro:', error);
       Alert.alert('Erro', 'Houve um erro ao salvar o registro. Por favor, tente novamente.');
+    }
+  };
+
+  const deleteRecord = async (id) => {
+    try {
+      const updatedRecords = records.filter(record => record.id !== id);
+      setRecords(updatedRecords);
+      await AsyncStorage.setItem('records', JSON.stringify(updatedRecords));
+      Alert.alert('Sucesso', 'Registro deletado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao deletar o registro:', error);
+      Alert.alert('Erro', 'Houve um erro ao deletar o registro. Por favor, tente novamente.');
     }
   };
 
@@ -214,7 +226,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   itemSpacer: {
-    marginBottom: 50, // Adiciona espaçamento após o item de alimentação
+    marginBottom: 60, // Adiciona espaçamento após o item de alimentação
   },
 });
 
