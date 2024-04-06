@@ -1,35 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TreinoPeito = () => {
-  const [exercicios, setExercicios] = useState([
-    { id: '1', nome: 'Supino Reto', concluido: false },
-    // Adicione mais exercícios conforme necessário
-  ]);
+  const [exercicios, setExercicios] = useState([]);
 
   const [inputExercicio, setInputExercicio] = useState('');
   const [editingExercicioId, setEditingExercicioId] = useState(null);
 
+  useEffect(() => {
+    carregarExerciciosSalvos();
+  }, []);
+
+  const carregarExerciciosSalvos = async () => {
+    try {
+      const exerciciosSalvos = await AsyncStorage.getItem('@exerciciosPeito');
+      if (exerciciosSalvos !== null) {
+        setExercicios(JSON.parse(exerciciosSalvos));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar exercícios:', error);
+    }
+  };
+
+  const salvarExercicios = async (exercicios) => {
+    try {
+      await AsyncStorage.setItem('@exerciciosPeito', JSON.stringify(exercicios));
+    } catch (error) {
+      console.error('Erro ao salvar exercícios:', error);
+    }
+  };
+
   const adicionarExercicio = () => {
     if (inputExercicio) {
-      setExercicios((prevExercicios) => [
-        ...prevExercicios,
-        { id: Date.now().toString(), nome: inputExercicio, concluido: false }
-      ]);
+      const novoExercicio = { id: Date.now().toString(), nome: inputExercicio, concluido: false };
+      setExercicios((prevExercicios) => [...prevExercicios, novoExercicio]);
+      salvarExercicios([...exercicios, novoExercicio]);
       setInputExercicio('');
     }
   };
 
   const excluirExercicio = (id) => {
-    setExercicios((prevExercicios) => prevExercicios.filter((ex) => ex.id !== id));
+    const novosExercicios = exercicios.filter((ex) => ex.id !== id);
+    setExercicios(novosExercicios);
+    salvarExercicios(novosExercicios);
   };
 
   const alternarConclusaoExercicio = (id) => {
-    setExercicios((prevExercicios) =>
-      prevExercicios.map((ex) =>
-        ex.id === id ? { ...ex, concluido: !ex.concluido } : ex
-      )
+    const novosExercicios = exercicios.map((ex) =>
+      ex.id === id ? { ...ex, concluido: !ex.concluido } : ex
     );
+    setExercicios(novosExercicios);
+    salvarExercicios(novosExercicios);
   };
 
   const editarExercicio = (id) => {
@@ -40,11 +62,11 @@ const TreinoPeito = () => {
 
   const salvarEdicaoExercicio = () => {
     if (inputExercicio && editingExercicioId) {
-      setExercicios((prevExercicios) =>
-        prevExercicios.map((ex) =>
-          ex.id === editingExercicioId ? { ...ex, nome: inputExercicio } : ex
-        )
+      const novosExercicios = exercicios.map((ex) =>
+        ex.id === editingExercicioId ? { ...ex, nome: inputExercicio } : ex
       );
+      setExercicios(novosExercicios);
+      salvarExercicios(novosExercicios);
       setInputExercicio('');
       setEditingExercicioId(null);
     }
