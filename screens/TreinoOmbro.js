@@ -1,67 +1,95 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
 
-const TreinoOmbros = () => {
+const TreinoOmbro = () => {
   const [exercicios, setExercicios] = useState([
-    { id: 1, nome: 'Desenvolvimento máquina - 3x10', concluido: false },
-    { id: 2, nome: 'Elevação frontal - 3x10', concluido: false },
-    { id: 3, nome: 'Elevação lateral halteres - 3x10', concluido: false },
-    { id: 4, nome: 'Elevação unilateral polia baixa - 3x10', concluido: false },
-    { id: 5, nome: 'Crucifixo na máquina inverso - 3x10', concluido: false },
-    { id: 6, nome: 'Encolhimento halteres - 3x10', concluido: false },
-    { id: 7, nome: '', concluido: false }, // ID vazio para adicionar no futuro
-    { id: 8, nome: '', concluido: false }, // ID vazio para adicionar no futuro
-    { id: 9, nome: '', concluido: false }, // ID vazio para adicionar no futuro
+    { id: '1', nome: 'Elevação Lateral', concluido: false },
+    // Adicione mais exercícios conforme necessário
   ]);
 
-  const handleEdit = (id, novoNome) => {
-    const updatedExercicios = exercicios.map(exercicio => {
-      if (exercicio.id === id) {
-        return { ...exercicio, nome: novoNome };
-      }
-      return exercicio;
-    });
-    setExercicios(updatedExercicios);
-    AsyncStorage.setItem('OmbrosExercicios', JSON.stringify(updatedExercicios));
+  const [inputExercicio, setInputExercicio] = useState('');
+  const [editingExercicioId, setEditingExercicioId] = useState(null);
+
+  const adicionarExercicio = () => {
+    if (inputExercicio) {
+      setExercicios((prevExercicios) => [
+        ...prevExercicios,
+        { id: Date.now().toString(), nome: inputExercicio, concluido: false }
+      ]);
+      setInputExercicio('');
+    }
   };
 
-  const toggleConcluido = (id) => {
-    const updatedExercicios = exercicios.map(exercicio => {
-      if (exercicio.id === id) {
-        return { ...exercicio, concluido: !exercicio.concluido };
-      }
-      return exercicio;
-    });
-    setExercicios(updatedExercicios);
-    AsyncStorage.setItem('OmbrosExercicios', JSON.stringify(updatedExercicios));
+  const excluirExercicio = (id) => {
+    setExercicios((prevExercicios) => prevExercicios.filter((ex) => ex.id !== id));
+  };
+
+  const alternarConclusaoExercicio = (id) => {
+    setExercicios((prevExercicios) =>
+      prevExercicios.map((ex) =>
+        ex.id === id ? { ...ex, concluido: !ex.concluido } : ex
+      )
+    );
+  };
+
+  const editarExercicio = (id) => {
+    setEditingExercicioId(id);
+    const exercicioEditado = exercicios.find((ex) => ex.id === id);
+    setInputExercicio(exercicioEditado.nome);
+  };
+
+  const salvarEdicaoExercicio = () => {
+    if (inputExercicio && editingExercicioId) {
+      setExercicios((prevExercicios) =>
+        prevExercicios.map((ex) =>
+          ex.id === editingExercicioId ? { ...ex, nome: inputExercicio } : ex
+        )
+      );
+      setInputExercicio('');
+      setEditingExercicioId(null);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView horizontal={true}>
-        <FlatList
-          data={exercicios}
-          renderItem={({ item }) => (
-            <View style={[styles.item, { backgroundColor: item.concluido ? 'green' : 'black' }]}>
-              <TextInput
-                value={item.nome}
-                onChangeText={(text) => handleEdit(item.id, text)}
-                style={styles.input}
-              />
-              <TouchableOpacity onPress={() => toggleConcluido(item.id)}>
-                <Text style={styles.concluidoButton}>
-                  {item.concluido ? 'Concluído' : 'Não Concluído'}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {exercicios.map((item) => (
+          <View key={item.id} style={[styles.item, item.concluido ? styles.concluidoItem : null]}>
+            <TextInput
+              value={item.nome}
+              editable={false}
+              multiline={true}
+              style={[styles.input, { flex: 1 }]}
+            />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={() => alternarConclusaoExercicio(item.id)}>
+                <Text style={[styles.button, styles.concluidoButton, item.concluido ? styles.concluidoButtonText : null]}>
+                  {item.concluido ? 'Concluído' : 'Concluir'}
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => editarExercicio(item.id)}>
+                <Text style={[styles.button, styles.editarButton]}>Editar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => excluirExercicio(item.id)}>
+                <Text style={[styles.button, styles.excluirButton]}>Excluir</Text>
+              </TouchableOpacity>
             </View>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.list}
-        />
+          </View>
+        ))}
       </ScrollView>
+      <View style={styles.addButtonContainer}>
+        <TextInput
+          value={inputExercicio}
+          onChangeText={(text) => setInputExercicio(text)}
+          placeholder="Novo Exercício"
+          placeholderTextColor="white"
+          style={[styles.input, { flex: 1 }]}
+          multiline={true}
+        />
+        <TouchableOpacity onPress={editingExercicioId ? salvarEdicaoExercicio : adicionarExercicio} style={styles.addButton}>
+          <Text style={styles.addButtonLabel}>{editingExercicioId ? 'Salvar' : '+'}</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -71,33 +99,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
-  list: {
-    paddingVertical: 10,
+  scrollContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     padding: 10,
-    marginHorizontal: 10,
+    marginVertical: 5,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: 'white',
-    borderRadius: 5,
-    marginBottom: 10,
-    minWidth: 200,
+    backgroundColor: '#333', // Cor adicionada ao item
+  },
+  concluidoItem: {
+    backgroundColor: 'green',
   },
   input: {
-    color: 'white',
     fontSize: 16,
-    flex: 1,
+    color: 'white',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  button: {
+    color: 'white',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginLeft: 5,
   },
   concluidoButton: {
+    backgroundColor: 'green',
+  },
+  concluidoButtonText: {
+    color: 'black',
+  },
+  editarButton: {
+    backgroundColor: 'blue',
+  },
+  excluirButton: {
+    backgroundColor: 'red',
+  },
+  addButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+    marginHorizontal: 10,
+  },
+  addButton: {
+    backgroundColor: 'blue',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginLeft: 10,
+  },
+  addButtonLabel: {
     color: 'white',
-    padding: 5,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: 'white',
+    fontSize: 20,
   },
 });
 
-export default TreinoOmbros;
+export default TreinoOmbro;
