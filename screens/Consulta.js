@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ConsultaScreen = () => {
+const ConsultaScreen = ({ isLightMode, toggleLightMode }) => {
   const [records, setRecords] = useState([]);
   const [gramsInput, setGramsInput] = useState({});
   const [proteinOutput, setProteinOutput] = useState({});
@@ -91,11 +91,11 @@ const ConsultaScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container, isLightMode && styles.containerLight]}>
       {/* Cabeçalho "Alimentos" */}
       <View style={styles.header}>
         <Icon name="" size={20} color="#007bff" />
-        <Text style={[styles.headerTitle, styles.whiteText]}>Alimentos</Text>
+        <Text style={[styles.headerTitle, isLightMode && styles.headerTitleLight]}>Alimentos</Text>
       </View>
 
       {/* Renderização dos itens de alimentação */}
@@ -106,10 +106,10 @@ const ConsultaScreen = () => {
           ) : (
             <Icon name="cutlery" size={50} color="#007bff" />
           )}
-          <Text style={[styles.title, styles.whiteText]}>{item.name}</Text>
+          <Text style={[styles.title, isLightMode && styles.titleLight]}>{item.name}</Text>
           <View style={styles.inputContainer}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, isLightMode && styles.inputLight]}
               placeholder={item.name.includes('Ovo') ? "Quantidade (unidade)" : "Quantidade (g)"}
               value={gramsInput[item.name]}
               onChangeText={(value) => setGramsInput(prevState => ({ ...prevState, [item.name]: value }))}
@@ -117,13 +117,13 @@ const ConsultaScreen = () => {
             />
           </View>
           <TouchableOpacity onPress={() => calculateProtein(item.name, gramsInput[item.name])}>
-            <Text style={[styles.button, styles.whiteText]}>Calcular Proteína</Text>
+            <Text style={[styles.button, isLightMode && styles.buttonLight]}>Calcular Proteína</Text>
           </TouchableOpacity>
           {proteinOutput[item.name] && (
-            <Text style={[styles.info, styles.whiteText]}>Proteína: {proteinOutput[item.name]}g</Text>
+            <Text style={[styles.info, isLightMode && styles.infoLight]}>Proteína: {proteinOutput[item.name]}g</Text>
           )}
           <TouchableOpacity onPress={() => saveRecord(item.name)}>
-            <Text style={[styles.button, styles.whiteText]}>Salvar Registro</Text>
+            <Text style={[styles.button, isLightMode && styles.buttonLight]}>Salvar Registro</Text>
           </TouchableOpacity>
           <View style={styles.itemSpacer} />
         </View>
@@ -134,16 +134,16 @@ const ConsultaScreen = () => {
 
       {/* Lista de registros salvos */}
       <View style={styles.recordList}>
-        <Text style={[styles.title, styles.whiteText]}>Registros Salvos</Text>
+        <Text style={[styles.title, isLightMode && styles.titleLight]}>Registros Salvos</Text>
         <TouchableOpacity onPress={clearRecords}>
-          <Text style={[styles.link, styles.whiteText]}>Limpar Registros</Text>
+          <Text style={[styles.link, isLightMode && styles.linkLight]}>Limpar Registros</Text>
         </TouchableOpacity>
         <View>
-          <Text style={[styles.info, styles.whiteText]}>Clique em um registro para deletá-lo:</Text>
+          <Text style={[styles.info, isLightMode && styles.infoLight]}>Clique em um registro para deletá-lo:</Text>
           <View>
             {records.map((record) => (
               <TouchableOpacity key={record.id} onPress={() => deleteRecord(record.id)}>
-                <Text style={[styles.record, styles.whiteText]}>
+                <Text style={[styles.record, isLightMode && styles.recordLight]}>
                   {record.foodName} - {record.gramsConsumed}g - {record.proteinConsumed}g de proteína - {record.createdAt}
                 </Text>
               </TouchableOpacity>
@@ -162,16 +162,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
   },
+  containerLight: {
+    backgroundColor: '#fff',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20, // Adiciona espaço abaixo do cabeçalho "Alimentos"
+    marginBottom: 20,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 20, 
     marginBottom: 30,
+    color: '#fff',
+  },
+  headerTitleLight: {
+    color: '#000',
   },
   itemContainer: {
     marginBottom: 30,
@@ -181,6 +188,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#fff',
+  },
+  titleLight: {
+    color: '#000',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -197,6 +208,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
   },
+  inputLight: {
+    backgroundColor: '#000',
+    color: '#fff',
+  },
   button: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -206,27 +221,40 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10,
   },
+  buttonLight: {
+    backgroundColor: '#fff',
+    color: '#000',
+  },
   bottomSpacer: {
-    height: 20, // Espaçamento abaixo dos itens de alimentação
+    height: 20,
   },
   recordList: {
     marginTop: 20,
   },
   record: {
     marginBottom: 5,
+    color: '#fff',
+  },
+  recordLight: {
+    color: '#000',
   },
   link: {
     textDecorationLine: 'underline',
     marginTop: 5,
+    color: '#fff',
+  },
+  linkLight: {
+    color: '#000',
   },
   info: {
     marginBottom: 5,
-  },
-  whiteText: {
     color: '#fff',
   },
+  infoLight: {
+    color: '#000',
+  },
   itemSpacer: {
-    marginBottom: 60, // Adiciona espaçamento após o item de alimentação
+    marginBottom: 60,
   },
 });
 

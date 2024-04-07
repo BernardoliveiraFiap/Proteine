@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TreinoOmbros = ({ isLightMode, toggleLightMode }) => {
+const TreinoOmbro = ({ isLightMode }) => {
   const [exercicios, setExercicios] = useState([]);
   const [inputExercicio, setInputExercicio] = useState('');
   const [editingExercicioId, setEditingExercicioId] = useState(null);
@@ -191,4 +191,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TreinoOmbros;
+export default TreinoOmbro;

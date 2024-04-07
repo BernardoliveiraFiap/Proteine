@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar, View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Linking, Button } from 'react-native';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CalculoProteinaScreen from './screens/CalculoProteinaScreen';
@@ -8,10 +8,10 @@ import MetaScreen from './screens/MetaScreen';
 import Consulta from './screens/Consulta';
 import TreinoPeito from './screens/TreinoPeito';
 import TreinoCostas from './screens/TreinoCostas';
-import TreinoOmbros from './screens/TreinoOmbro';
+import TreinoOmbro from './screens/TreinoOmbro'; 
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -74,6 +74,7 @@ const App = () => {
 
   const MyTheme = {
     ...DefaultTheme,
+    dark: isLightMode ? false : true,
     colors: {
       ...DefaultTheme.colors,
       primary: isLightMode ? 'black' : 'white',
@@ -118,12 +119,12 @@ const App = () => {
         </Drawer.Screen>
         <Drawer.Screen
           name="Treino de Ombros"
-          component={TreinoOmbros}
           options={{
             drawerLabel: 'Treino de Ombros',
             drawerIcon: ({ color }) => <MaterialCommunityIcons name="weight" size={24} color={color} />,
-          }}
-        />
+          }}>
+          {props => <TreinoOmbro {...props} isLightMode={isLightMode} />}
+        </Drawer.Screen>
         <Drawer.Screen
           name="Calcular Proteína"
           options={{
@@ -134,7 +135,7 @@ const App = () => {
         </Drawer.Screen>
         <Drawer.Screen
           name="Meta"
-          component={MetaScreen}
+          children={props => <MetaScreen {...props} isLightMode={isLightMode} />}
           options={{
             drawerLabel: 'Meta',
             drawerIcon: ({ color }) => <Icon name="calendar" size={24} color={color} />,
@@ -142,12 +143,13 @@ const App = () => {
         />
         <Drawer.Screen
           name="Consulta"
-          component={Consulta}
+          children={props => <Consulta {...props} isLightMode={isLightMode} />}
           options={{
             drawerLabel:'Consultar Info',
             drawerIcon: ({ color }) => <Icon name="info" size={25} color={color} />,
           }}
-        />
+/>
+
       </Drawer.Navigator>
     </NavigationContainer>
   );

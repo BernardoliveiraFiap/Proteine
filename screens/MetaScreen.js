@@ -1,10 +1,9 @@
-// MetaScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native'; 
 
-export default function MetaScreen({ navigation }) {
+export default function MetaScreen({ navigation, isLightMode, toggleLightMode, meta, alterarMeta }) {
   const [registros, setRegistros] = useState([]);
 
   const loadRegistros = async () => {
@@ -35,18 +34,18 @@ export default function MetaScreen({ navigation }) {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container, isLightMode && styles.containerLight]}>
       {registros.slice().reverse().map((registro, index) => (
         <View key={index} style={styles.registroContainer}>
-          <Text style={styles.label}>Dia: {registro.dia}</Text>
-          <Text style={styles.label}>Mês: {registro.mes}</Text>
-          <Text style={styles.label}>Filé de Frango (g): {registro.frangoGramas}</Text>
-          <Text style={styles.label}>Contrafilé (g): {registro.contrafileGramas}</Text>
-          <Text style={styles.label}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
-          <Text style={styles.label}>Ovo Sem Gema (quantidade): {registro.ovoSemGema}</Text>
-          <Text style={styles.label}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
-          <Text style={styles.label}>Meta Diária de Proteína (g): {registro.metaDiaria}</Text>
-          <Text style={styles.label}>Proteínas Ingeridas (g): {registro.totalProteinas}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Dia: {registro.dia}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Mês: {registro.mes}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Filé de Frango (g): {registro.frangoGramas}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Contrafilé (g): {registro.contrafileGramas}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Ovo Sem Gema (quantidade): {registro.ovoSemGema}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Meta Diária de Proteína (g): {meta}</Text>
+          <Text style={[styles.label, isLightMode && styles.labelLight]}>Proteínas Ingeridas (g): {registro.totalProteinas}</Text>
           <TouchableOpacity style={styles.excluirButton} onPress={() => excluirRegistro(registro.id)}>
             <Text style={styles.excluirButtonText}>Excluir</Text>
           </TouchableOpacity>
@@ -63,6 +62,9 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     backgroundColor: '#000',
   },
+  containerLight: {
+    backgroundColor: '#fff',
+  },
   registroContainer: {
     marginBottom: 20,
     borderWidth: 1,
@@ -75,6 +77,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#fff',
+  },
+  labelLight: {
     color: '#000',
   },
   excluirButton: {
