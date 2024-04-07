@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TreinoCostas = () => {
+const TreinoCostas = ({ isLightMode, toggleLightMode }) => {
   const [exercicios, setExercicios] = useState([]);
-
   const [inputExercicio, setInputExercicio] = useState('');
   const [editingExercicioId, setEditingExercicioId] = useState(null);
 
@@ -14,7 +13,7 @@ const TreinoCostas = () => {
 
   const carregarExerciciosSalvos = async () => {
     try {
-      const exerciciosSalvos = await AsyncStorage.getItem('@exercicios');
+      const exerciciosSalvos = await AsyncStorage.getItem('@exerciciosCostas');
       if (exerciciosSalvos !== null) {
         setExercicios(JSON.parse(exerciciosSalvos));
       }
@@ -25,7 +24,7 @@ const TreinoCostas = () => {
 
   const salvarExercicios = async (exercicios) => {
     try {
-      await AsyncStorage.setItem('@exercicios', JSON.stringify(exercicios));
+      await AsyncStorage.setItem('@exerciciosCostas', JSON.stringify(exercicios));
     } catch (error) {
       console.error('Erro ao salvar exercícios:', error);
     }
@@ -35,7 +34,7 @@ const TreinoCostas = () => {
     if (inputExercicio) {
       const novoExercicio = { id: Date.now().toString(), nome: inputExercicio, concluido: false };
       setExercicios((prevExercicios) => [...prevExercicios, novoExercicio]);
-      salvarExercicios([...exercicios, novoExercicio]); // Salva os exercícios atualizados
+      salvarExercicios([...exercicios, novoExercicio]);
       setInputExercicio('');
     }
   };
@@ -43,7 +42,7 @@ const TreinoCostas = () => {
   const excluirExercicio = (id) => {
     const novosExercicios = exercicios.filter((ex) => ex.id !== id);
     setExercicios(novosExercicios);
-    salvarExercicios(novosExercicios); // Salva os exercícios atualizados
+    salvarExercicios(novosExercicios);
   };
 
   const alternarConclusaoExercicio = (id) => {
@@ -51,7 +50,7 @@ const TreinoCostas = () => {
       ex.id === id ? { ...ex, concluido: !ex.concluido } : ex
     );
     setExercicios(novosExercicios);
-    salvarExercicios(novosExercicios); // Salva os exercícios atualizados
+    salvarExercicios(novosExercicios);
   };
 
   const editarExercicio = (id) => {
@@ -66,14 +65,14 @@ const TreinoCostas = () => {
         ex.id === editingExercicioId ? { ...ex, nome: inputExercicio } : ex
       );
       setExercicios(novosExercicios);
-      salvarExercicios(novosExercicios); // Salva os exercícios atualizados
+      salvarExercicios(novosExercicios);
       setInputExercicio('');
       setEditingExercicioId(null);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, isLightMode ? styles.containerLight : styles.containerDark]}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {exercicios.map((item) => (
           <View key={item.id} style={[styles.item, item.concluido ? styles.concluidoItem : null]}>
@@ -104,8 +103,8 @@ const TreinoCostas = () => {
           value={inputExercicio}
           onChangeText={(text) => setInputExercicio(text)}
           placeholder="Novo Exercício"
-          placeholderTextColor="white"
-          style={[styles.input, { flex: 1 }]}
+          placeholderTextColor={isLightMode ? '#666' : '#ccc'} // Cor do placeholder ajustada
+          style={[styles.input, { flex: 1, backgroundColor: isLightMode ? '#ddd' : '#333' }]} // Cor de fundo e cor do texto ajustadas
           multiline={true}
         />
         <TouchableOpacity onPress={editingExercicioId ? salvarEdicaoExercicio : adicionarExercicio} style={styles.addButton}>
@@ -119,6 +118,12 @@ const TreinoCostas = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'black',
+  },
+  containerLight: {
+    backgroundColor: '#fff',
+  },
+  containerDark: {
     backgroundColor: 'black',
   },
   scrollContainer: {

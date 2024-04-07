@@ -1,9 +1,8 @@
-// CalculoProteinaScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, SafeAreaView, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function CalculoProteinaScreen({ navigation }) {
+export default function CalculoProteinaScreen({ navigation, isLightMode }) {
   const [frangoGramas, setFrangoGramas] = useState('');
   const [contrafileGramas, setContrafileGramas] = useState('');
   const [ovoComGema, setOvoComGema] = useState('');
@@ -67,75 +66,75 @@ export default function CalculoProteinaScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+    <SafeAreaView style={[styles.container, isLightMode ? styles.containerLight : styles.containerDark]}>
+      <StatusBar barStyle={isLightMode ? "dark-content" : "light-content"} backgroundColor={isLightMode ? "white" : "black"} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <Text style={styles.label}>Filé de Frango (g)</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Filé de Frango (g)</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={frangoGramas}
           onChangeText={text => setFrangoGramas(text)}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Contrafilé (g)</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Contrafilé (g)</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={contrafileGramas}
           onChangeText={text => setContrafileGramas(text)}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Ovos com Gema</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Ovos com Gema</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={ovoComGema}
           onChangeText={text => setOvoComGema(text)}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Ovos sem Gema</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Ovos sem Gema</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={ovoSemGema}
           onChangeText={text => setOvoSemGema(text)}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Shake de Whey (quantidade)</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Shake de Whey (quantidade)</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={shakeQuantidade}
           onChangeText={text => setShakeQuantidade(text)}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Meta Diária de Proteína (g)</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Meta Diária de Proteína (g)</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={metaDiaria}
           onChangeText={text => setMetaDiaria(text)}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Dia</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Dia</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={dia}
           onChangeText={text => setDia(text)}
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Mês</Text>
+        <Text style={[styles.label, isLightMode && styles.labelLight]}>Mês</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isLightMode && styles.inputLight]}
           value={mes}
           onChangeText={text => setMes(text)}
           keyboardType="numeric"
         />
 
-        <TouchableOpacity style={styles.saveButton} onPress={salvarRegistro}>
-          <Text style={styles.saveButtonText}>Salvar</Text>
+        <TouchableOpacity style={[styles.saveButton, isLightMode && styles.saveButtonLight]} onPress={salvarRegistro}>
+          <Text style={[styles.saveButtonText, isLightMode && styles.saveButtonTextLight]}>Salvar</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -145,7 +144,13 @@ export default function CalculoProteinaScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', 
+    backgroundColor: '#000',
+  },
+  containerLight: {
+    backgroundColor: '#fff',
+  },
+  containerDark: {
+    backgroundColor: '#000',
   },
   scrollViewContent: {
     padding: 20,
@@ -156,6 +161,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 10,
   },
+  labelLight: {
+    color: '#000',
+  },
   input: {
     backgroundColor: '#fff',
     color: '#000',
@@ -164,13 +172,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 20,
   },
-  pickerContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  picker: {
-    color: '#000',
+  inputLight: {
+    backgroundColor: '#f2f2f2',
   },
   saveButton: {
     backgroundColor: '#007bff',
@@ -179,10 +182,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
   },
+  saveButtonLight: {
+    backgroundColor: '#0099ff',
+  },
   saveButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
+  },
+  saveButtonTextLight: {
+    color: '#000',
   },
 });

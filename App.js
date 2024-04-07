@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar, View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Linking, Button } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
@@ -8,7 +8,7 @@ import MetaScreen from './screens/MetaScreen';
 import Consulta from './screens/Consulta';
 import TreinoPeito from './screens/TreinoPeito';
 import TreinoCostas from './screens/TreinoCostas';
-import TreinoOmbros from './screens/TreinoOmbro'; // Importa o componente TreinoOmbros
+import TreinoOmbros from './screens/TreinoOmbro';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,21 +24,12 @@ const CustomDrawerContent = (props) => (
       icon={() => <Icon name="linkedin" size={30} color="white" />}
     />
     <DrawerItem
-      label="Limpar AsyncStorage"
-      onPress={clearAsyncStorage}
-      icon={() => <Icon name="trash" size={24} color="white" />}
+      label="Mudar Tema"
+      onPress={props.toggleLightMode}
+      icon={() => <Icon name="lightbulb-o" size={24} color="white" />}
     />
   </DrawerContentScrollView>
 );
-
-const clearAsyncStorage = async () => {
-  try {
-    await AsyncStorage.removeItem('CostasBicepsExercicios');
-    alert('AsyncStorage limpo com sucesso!');
-  } catch (error) {
-    alert('Erro ao limpar AsyncStorage: ' + error.message);
-  }
-};
 
 const AudioButton1 = () => {
   const [playing, setPlaying] = React.useState(false);
@@ -50,7 +41,7 @@ const AudioButton1 = () => {
         onPress={() => { setPlaying(prev => !prev); }}
       />
       <YoutubePlayer
-        height={0} // Set to 0 so the video player is hidden
+        height={0}
         play={playing}
         videoId={'8puNABA4rxw'}
         onChangeState={event => console.log(event)}
@@ -69,7 +60,7 @@ const AudioButton2 = () => {
         onPress={() => { setPlaying(prev => !prev); }}
       />
       <YoutubePlayer
-        height={0} // Set to 0 so the video player is hidden
+        height={0}
         play={playing}
         videoId={'Cbwowt-joDU'}
         onChangeState={event => console.log(event)}
@@ -79,62 +70,68 @@ const AudioButton2 = () => {
 };
 
 const App = () => {
+  const [isLightMode, setIsLightMode] = useState(false);
+
   const MyTheme = {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      primary: 'white',
-      background: 'white',
+      primary: isLightMode ? 'black' : 'white',
+      background: isLightMode ? 'white' : '#007bff',
       card: '#007bff',
-      text: 'white',
+      text: isLightMode ? 'black' : 'white',
       border: 'white',
     },
   };
 
+  const toggleLightMode = () => {
+    setIsLightMode(!isLightMode);
+  };
+
   return (
     <NavigationContainer theme={MyTheme}>
-      <StatusBar barStyle="light-content" backgroundColor="black" />
-      <Drawer.Navigator initialRouteName="Home" drawerContent={props => <CustomDrawerContent {...props} />}>
+      <StatusBar barStyle={isLightMode ? "dark-content" : "light-content"} backgroundColor={isLightMode ? "white" : "black"} />
+      <Drawer.Navigator initialRouteName="Home" drawerContent={props => <CustomDrawerContent {...props} toggleLightMode={toggleLightMode} />}>
         <Drawer.Screen
           name="Home"
-          component={HomeScreen}
           options={{
             drawerLabel: 'Home',
             drawerIcon: ({ color }) => <Icon name="home" size={24} color={color} />,
-          }}
-        />
+          }}>
+          {props => <HomeScreen {...props} isLightMode={isLightMode} />}
+        </Drawer.Screen>
         <Drawer.Screen
           name="Treino de Peito"
-          component={TreinoPeito}
           options={{
             drawerLabel: 'Treino de Peito',
             drawerIcon: ({ color }) => <MaterialCommunityIcons name="dumbbell" size={24} color={color} />,
-          }}
-        />
+          }}>
+          {props => <TreinoPeito {...props} isLightMode={isLightMode} toggleLightMode={toggleLightMode} />}
+        </Drawer.Screen>
         <Drawer.Screen
           name="Treino de Costas"
-          component={TreinoCostas}
           options={{
             drawerLabel: 'Treino de Costas',
             drawerIcon: ({ color }) => <MaterialCommunityIcons name="weight-lifter" size={24} color={color} />,
-          }}
-        />
+          }}>
+          {props => <TreinoCostas {...props} isLightMode={isLightMode} toggleLightMode={toggleLightMode} />}
+        </Drawer.Screen>
         <Drawer.Screen
-          name="Treino de Ombros" // Nomeie a tela como "Treino de Ombros"
-          component={TreinoOmbros} // Use o componente TreinoOmbros
+          name="Treino de Ombros"
+          component={TreinoOmbros}
           options={{
-            drawerLabel: 'Treino de Ombros', // Etiqueta do Drawer
+            drawerLabel: 'Treino de Ombros',
             drawerIcon: ({ color }) => <MaterialCommunityIcons name="weight" size={24} color={color} />,
           }}
         />
         <Drawer.Screen
           name="Calcular Proteína"
-          component={CalculoProteinaScreen}
           options={{
             drawerLabel: 'Calcular Proteína',
             drawerIcon: ({ color }) => <Icon name="cutlery" size={24} color={color} />,
-          }}
-        />
+          }}>
+          {props => <CalculoProteinaScreen {...props} isLightMode={isLightMode} />}
+        </Drawer.Screen>
         <Drawer.Screen
           name="Meta"
           component={MetaScreen}
@@ -156,17 +153,17 @@ const App = () => {
   );
 }
 
-const HomeScreen = () => {
+const HomeScreen = ({ isLightMode }) => {
   const date = new Date();
   const currentDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, isLightMode && styles.containerLight]}>
       <View style={styles.content}>
         <TouchableOpacity style={styles.iconContainer} onPress={() => Linking.openURL('https://www.linkedin.com/in/oliveiraenzobackend/')}>
-          <Icon name="linkedin" size={30} color="white" />
+          <Icon name="linkedin" size={30} color={isLightMode ? 'black' : 'white'} />
         </TouchableOpacity>
-        <Text style={styles.welcomeText}>Seja bem-vindo, senhor!</Text>
-        <Text style={styles.dateText}>{currentDate}</Text>
+        <Text style={[styles.welcomeText, isLightMode && { color: 'black' }]}>Seja bem-vindo, senhor!</Text>
+        <Text style={[styles.dateText, isLightMode && { color: 'black' }]}>{currentDate}</Text>
         <View style={styles.buttonSpacing}>
           <AudioButton1 />
         </View>
@@ -185,6 +182,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  containerLight: {
+    backgroundColor: '#fff',
+  },
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -194,23 +194,23 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'white',
     textAlign: 'center',
     paddingHorizontal: 20,
-    marginBottom: 40, // Ajustado para distribuir uniformemente
+    marginBottom: 40,
+    color: 'white',
   },
   dateText: {
     fontSize: 18,
-    color: 'white',
     textAlign: 'center',
     paddingHorizontal: 20,
     marginBottom: 20,
+    color: 'white',
   },
   iconContainer: {
-    marginBottom: 20, // Ajustado para centralizar verticalmente
+    marginBottom: 20,
   },
   buttonSpacing: {
-    marginTop: 25, // Espaçamento de 10 unidades
+    marginTop: 25,
   },
 });
 

@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TreinoOmbro = () => {
+const TreinoOmbros = ({ isLightMode, toggleLightMode }) => {
   const [exercicios, setExercicios] = useState([]);
-
   const [inputExercicio, setInputExercicio] = useState('');
   const [editingExercicioId, setEditingExercicioId] = useState(null);
 
@@ -14,7 +13,7 @@ const TreinoOmbro = () => {
 
   const carregarExerciciosSalvos = async () => {
     try {
-      const exerciciosSalvos = await AsyncStorage.getItem('@exerciciosOmbro');
+      const exerciciosSalvos = await AsyncStorage.getItem('@exerciciosOmbros');
       if (exerciciosSalvos !== null) {
         setExercicios(JSON.parse(exerciciosSalvos));
       }
@@ -25,7 +24,7 @@ const TreinoOmbro = () => {
 
   const salvarExercicios = async (exercicios) => {
     try {
-      await AsyncStorage.setItem('@exerciciosOmbro', JSON.stringify(exercicios));
+      await AsyncStorage.setItem('@exerciciosOmbros', JSON.stringify(exercicios));
     } catch (error) {
       console.error('Erro ao salvar exercícios:', error);
     }
@@ -73,7 +72,7 @@ const TreinoOmbro = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, isLightMode ? styles.containerLight : styles.containerDark]}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {exercicios.map((item) => (
           <View key={item.id} style={[styles.item, item.concluido ? styles.concluidoItem : null]}>
@@ -104,8 +103,8 @@ const TreinoOmbro = () => {
           value={inputExercicio}
           onChangeText={(text) => setInputExercicio(text)}
           placeholder="Novo Exercício"
-          placeholderTextColor="white"
-          style={[styles.input, { flex: 1 }]}
+          placeholderTextColor={isLightMode ? '#666' : '#ccc'} // Cor do placeholder ajustada
+          style={[styles.input, { flex: 1, backgroundColor: isLightMode ? '#ddd' : '#333' }]} // Cor de fundo e cor do texto ajustadas
           multiline={true}
         />
         <TouchableOpacity onPress={editingExercicioId ? salvarEdicaoExercicio : adicionarExercicio} style={styles.addButton}>
@@ -119,6 +118,12 @@ const TreinoOmbro = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'black',
+  },
+  containerLight: {
+    backgroundColor: '#fff',
+  },
+  containerDark: {
     backgroundColor: 'black',
   },
   scrollContainer: {
@@ -186,4 +191,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TreinoOmbro;
+export default TreinoOmbros;
