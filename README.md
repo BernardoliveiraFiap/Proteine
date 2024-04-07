@@ -4,7 +4,7 @@
 
 ![final](https://github.com/BernardoliveiraFiap/Proteine/assets/126569987/d6a14e67-8f1c-418a-a709-a1e6fc87b124)
 
-Projeto desenvolvido de forma autônoma, um aplicativo mobile Android capaz de criar treinos de academia, editar e deletar, capaz de calcular proteínas em alimentos determinados, além de salvar histórico de proteínas ingeridas no dia a dia e salvando na tela “meta” para assim o usuário fazer um melhor controle de seus ganhos proteicos, além disso também temos a opção de consultar informações de proteínas de X alimento baseado na quantidade de gramas que o usuário irá consumir ao dia, assim podendo fazer consulta e salvar o registro com a data e hora, para ao final do dia poder salvar o progresso todo na tela de meta através da tela calcular proteína. ( desenvolvido em React-native )
+Projeto desenvolvido de forma autônoma: um aplicativo móvel para Android capaz de criar, editar e excluir treinos de academia. Além disso, o aplicativo é capaz de calcular a quantidade de proteínas em alimentos específicos, permitindo aos usuários acompanhar o consumo diário de proteínas e estabelecer metas. Também oferece a opção de consultar informações sobre a quantidade de proteínas em um determinado alimento, com base na quantidade em gramas que o usuário planeja consumir por dia. Os registros das consultas são salvos com a data e hora, permitindo que o progresso seja acompanhado e registrado na tela de metas por meio da função de cálculo de proteínas.
 
 Durante o desenvolvimento, fiz o uso de uma série de bibliotecas, 
 incluindo:
