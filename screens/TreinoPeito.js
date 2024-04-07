@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, SafeAreaView, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TreinoPeito = ({ isLightMode, toggleLightMode }) => {
@@ -40,9 +40,25 @@ const TreinoPeito = ({ isLightMode, toggleLightMode }) => {
   };
 
   const excluirExercicio = (id) => {
-    const novosExercicios = exercicios.filter((ex) => ex.id !== id);
-    setExercicios(novosExercicios);
-    salvarExercicios(novosExercicios);
+    Alert.alert(
+      'Confirmação',
+      'Você realmente deseja deletar?',
+      [
+        {
+          text: 'Sim',
+          onPress: () => {
+            const novosExercicios = exercicios.filter((ex) => ex.id !== id);
+            setExercicios(novosExercicios);
+            salvarExercicios(novosExercicios);
+          },
+        },
+        {
+          text: 'Não',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const alternarConclusaoExercicio = (id) => {
