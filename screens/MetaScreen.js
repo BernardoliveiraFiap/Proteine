@@ -34,18 +34,18 @@ export default function MetaScreen({ navigation, isLightMode, toggleLightMode, m
   );
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, isLightMode && styles.containerLight]}>
+    <ScrollView contentContainerStyle={[styles.container, isLightMode ? styles.containerLight : styles.containerDark]}>
       {registros.slice().reverse().map((registro, index) => (
-        <View key={index} style={styles.registroContainer}>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Dia: {registro.dia}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Mês: {registro.mes}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Filé de Frango (g): {registro.frangoGramas}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Contrafilé (g): {registro.contrafileGramas}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Ovo Sem Gema (quantidade): {registro.ovoSemGema}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Meta Diária de Proteína (g): {meta}</Text>
-          <Text style={[styles.label, isLightMode && styles.labelLight]}>Proteínas Ingeridas (g): {registro.totalProteinas}</Text>
+        <View key={index} style={[styles.registroContainer, isLightMode ? styles.registroContainerLight : styles.registroContainerDark]}>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Dia: {registro.dia}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Mês: {registro.mes}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Filé de Frango (g): {registro.frangoGramas}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Contrafilé (g): {registro.contrafileGramas}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Ovo Sem Gema (quantidade): {registro.ovoSemGema}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Meta Diária de Proteína (g): {meta}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Proteínas Ingeridas (g): {registro.totalProteinas}</Text>
           <TouchableOpacity style={styles.excluirButton} onPress={() => excluirRegistro(registro.id)}>
             <Text style={styles.excluirButtonText}>Excluir</Text>
           </TouchableOpacity>
@@ -60,10 +60,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
-    backgroundColor: '#000',
   },
   containerLight: {
     backgroundColor: '#fff',
+  },
+  containerDark: {
+    backgroundColor: '#000',
   },
   registroContainer: {
     marginBottom: 20,
@@ -71,16 +73,23 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 10,
     borderRadius: 10,
+  },
+  registroContainerLight: {
     backgroundColor: '#fff',
+  },
+  registroContainerDark: {
+    backgroundColor: '#333',
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#fff',
   },
   labelLight: {
     color: '#000',
+  },
+  labelDark: {
+    color: '#fff',
   },
   excluirButton: {
     backgroundColor: '#dc3545',
