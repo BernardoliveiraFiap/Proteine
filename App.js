@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StatusBar, View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Linking, Button } from 'react-native';
+import { StatusBar, View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Linking, Button, Image } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,10 +8,8 @@ import MetaScreen from './screens/MetaScreen';
 import Consulta from './screens/Consulta';
 import TreinoPeito from './screens/TreinoPeito';
 import TreinoCostas from './screens/TreinoCostas';
-import TreinoOmbro from './screens/TreinoOmbro'; 
-import YoutubePlayer from 'react-native-youtube-iframe';
+import TreinoOmbro from './screens/TreinoOmbro';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
 
 const Drawer = createDrawerNavigator();
 
@@ -31,43 +29,7 @@ const CustomDrawerContent = (props) => (
   </DrawerContentScrollView>
 );
 
-const AudioButton1 = () => {
-  const [playing, setPlaying] = React.useState(false);
 
-  return (
-    <>
-      <Button
-        title={playing ? "Pause Light Weight" : "Play Light Weight"}
-        onPress={() => { setPlaying(prev => !prev); }}
-      />
-      <YoutubePlayer
-        height={0}
-        play={playing}
-        videoId={'8puNABA4rxw'}
-        onChangeState={event => console.log(event)}
-      />
-    </>
-  );
-};
-
-const AudioButton2 = () => {
-  const [playing, setPlaying] = React.useState(false);
-
-  return (
-    <>
-      <Button
-        title={playing ? "Pause Yeah Buddy" : "Play Yeah Buddy"}
-        onPress={() => { setPlaying(prev => !prev); }}
-      />
-      <YoutubePlayer
-        height={0}
-        play={playing}
-        videoId={'Cbwowt-joDU'}
-        onChangeState={event => console.log(event)}
-      />
-    </>
-  );
-};
 
 const App = () => {
   const [isLightMode, setIsLightMode] = useState(false);
@@ -148,8 +110,7 @@ const App = () => {
             drawerLabel:'Consultar Info',
             drawerIcon: ({ color }) => <Icon name="info" size={25} color={color} />,
           }}
-/>
-
+        />
       </Drawer.Navigator>
     </NavigationContainer>
   );
@@ -161,17 +122,14 @@ const HomeScreen = ({ isLightMode }) => {
   return (
     <SafeAreaView style={[styles.container, isLightMode && styles.containerLight]}>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.iconContainer} onPress={() => Linking.openURL('https://www.linkedin.com/in/oliveiraenzobackend/')}>
-          <Icon name="linkedin" size={30} color={isLightMode ? 'black' : 'white'} />
+        {/* Adicionando espaço ao cabeçalho */}
+        <TouchableOpacity style={[styles.iconContainer, { marginTop: 30 }]} onPress={() => Linking.openURL('https://www.linkedin.com/in/oliveiraenzobackend/')}>
+          {/* Utilizando um componente de imagem para evitar o erro */}
+          <Image source={require('./assets/icon.png')} style={styles.icon} />
         </TouchableOpacity>
         <Text style={[styles.welcomeText, isLightMode && { color: 'black' }]}>Seja bem-vindo, senhor!</Text>
         <Text style={[styles.dateText, isLightMode && { color: 'black' }]}>{currentDate}</Text>
-        <View style={styles.buttonSpacing}>
-          <AudioButton1 />
-        </View>
-        <View style={styles.buttonSpacing}>
-          <AudioButton2 />
-        </View>
+        
       </View>
     </SafeAreaView>
   );
@@ -188,32 +146,39 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   content: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 20,
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     paddingHorizontal: 20,
-    marginBottom: 40,
+    marginBottom: 10, 
     color: 'white',
   },
   dateText: {
     fontSize: 18,
     textAlign: 'center',
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 90, 
     color: 'white',
   },
   iconContainer: {
-    marginBottom: 20,
+    marginBottom: 10, 
   },
   buttonSpacing: {
-    marginTop: 25,
+    marginTop: 10, 
+  },
+  
+  icon: {
+    width: 300,
+    height: 300,
+    marginBottom: 80, 
+    borderRadius: 8,
   },
 });
 
 export default App;
+
