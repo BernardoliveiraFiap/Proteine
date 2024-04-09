@@ -123,7 +123,7 @@ const HomeScreen = ({ isLightMode }) => {
     <SafeAreaView style={[styles.container, isLightMode && styles.containerLight]}>
       <View style={styles.content}>
         {/* Adicionando espaço ao cabeçalho */}
-        <TouchableOpacity style={[styles.iconContainer, { marginTop: 30 }]} onPress={() => Linking.openURL('https://www.linkedin.com/in/oliveiraenzobackend/')}>
+        <TouchableOpacity style={[styles.iconContainer, { marginTop: 30 }]} >
           {/* Utilizando um componente de imagem para evitar o erro */}
           <Image source={require('./assets/icon.png')} style={styles.icon} />
         </TouchableOpacity>
