@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native'; 
 
-export default function MetaScreen({ navigation, isLightMode, toggleLightMode, meta, alterarMeta }) {
+export default function MetaScreen({ navigation, isLightMode }) {
   const [registros, setRegistros] = useState([]);
 
   const loadRegistros = async () => {
@@ -44,7 +44,7 @@ export default function MetaScreen({ navigation, isLightMode, toggleLightMode, m
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Ovo Sem Gema (quantidade): {registro.ovoSemGema}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
-          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Meta Diária de Proteína (g): {meta}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Meta Diária de Proteína (g): {registro.metaDiaria}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Proteínas Ingeridas (g): {registro.totalProteinas}</Text>
           <TouchableOpacity style={styles.excluirButton} onPress={() => excluirRegistro(registro.id)}>
             <Text style={styles.excluirButtonText}>Excluir</Text>

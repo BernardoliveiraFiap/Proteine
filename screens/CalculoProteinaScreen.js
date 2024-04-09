@@ -58,7 +58,7 @@ export default function CalculoProteinaScreen({ navigation, isLightMode }) {
       registrosAnteriores.push(registro);
       await AsyncStorage.setItem('registros', JSON.stringify(registrosAnteriores));
       Alert.alert('Sucesso', 'Registro salvo com sucesso!');
-      navigation.navigate('Meta');
+      navigation.navigate('Meta', { metaDiaria: metaDiaria }); // Passando a meta diária como parâmetro na navegação
     } catch (error) {
       console.error('Erro ao salvar o registro:', error);
       Alert.alert('Erro', 'Houve um erro ao salvar o registro. Por favor, tente novamente.');
