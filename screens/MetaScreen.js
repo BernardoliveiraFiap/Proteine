@@ -41,7 +41,7 @@ export default function MetaScreen({ navigation, isLightMode }) {
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Mês: {registro.mes}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Filé de Frango (g): {registro.frangoGramas}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Contrafilé (g): {registro.contrafileGramas}</Text>
-          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Ovo (quantidade): {registro.ovoQuantidade} {registro.ovoComGema ? 'com Gema' : 'sem Gema'}</Text>
+          <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Ovo com Gema (quantidade): {registro.ovoComGema}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Ovo Sem Gema (quantidade): {registro.ovoSemGema}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Shake de Whey (quantidade): {registro.shakeQuantidade}</Text>
           <Text style={[styles.label, isLightMode ? styles.labelLight : styles.labelDark]}>Meta Diária de Proteína (g): {registro.metaDiaria}</Text>
