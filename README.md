@@ -1,4 +1,4 @@
-#  APP PARA AUXILIAR NA DIETA V 3.5.0
+#  APP PARA AUXILIAR NA DIETA V 3.9.0
 
 
 
@@ -16,5 +16,5 @@ incluindo:
 - expo/vector-icons para uma ampla gama de ícones,
 - react-native-async-storage/async-storage para armazenamento local persistente.
 
-# APK : https://www.sendspace.com/file/a1xwfk
+# APK : https://www.sendspace.com/file/bmmfau
 
