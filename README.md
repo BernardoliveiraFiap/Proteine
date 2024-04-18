@@ -12,7 +12,6 @@ incluindo:
 - react-native para os componentes nativos do app,
 - react-navigation/drawer para uma navegação eficiente entre telas,
 - react-native-vector-icons/FontAwesome para ícones elegantes e expressivos,
-- react-native-youtube-iframe para integração de vídeos do YouTube,
 - expo/vector-icons para uma ampla gama de ícones,
 - react-native-async-storage/async-storage para armazenamento local persistente.
 
