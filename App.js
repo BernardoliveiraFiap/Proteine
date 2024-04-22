@@ -21,11 +21,7 @@ const CustomDrawerContent = (props) => (
       onPress={() => Linking.openURL('https://www.linkedin.com/in/oliveiraenzobackend/')}
       icon={() => <Icon name="linkedin" size={30} color="white" />}
     />
-    <DrawerItem
-      label="Mudar Tema"
-      onPress={props.toggleLightMode}
-      icon={() => <Icon name="lightbulb-o" size={24} color="white" />}
-    />
+    
   </DrawerContentScrollView>
 );
 
@@ -107,7 +103,7 @@ const App = () => {
           name="Consulta"
           children={props => <Consulta {...props} isLightMode={isLightMode} />}
           options={{
-            drawerLabel:'Consultar Info',
+            drawerLabel:'Consultar Integrantes',
             drawerIcon: ({ color }) => <Icon name="info" size={25} color={color} />,
           }}
         />
