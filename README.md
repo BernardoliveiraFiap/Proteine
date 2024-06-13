@@ -15,5 +15,5 @@ incluindo:
 - expo/vector-icons para uma ampla gama de ícones,
 - react-native-async-storage/async-storage para armazenamento local persistente.
 
-# APK : https://www.sendspace.com/file/bmmfau
+# APK: https://www.sendspace.com/file/bmmfau
 
